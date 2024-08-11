@@ -1,0 +1,42 @@
+version: "0.1"
+
+default_model:
+  model: meta.llama3-1-405b-instruct-v1:0
+
+flow:
+  validate_input:
+    action: validate_input
+    input_data:
+      var: user_input
+
+  generate_urban_plan:
+    action: llm
+    prompt:
+      - role: system
+        text: |
+          You are an expert AI urban planner. Your task is to provide detailed, actionable recommendations for urban planning based on the given information. Consider all aspects of urban planning, including zoning, transportation, sustainability, public spaces, infrastructure, and economic development.
+      - role: user
+        text: |
+          Please create a comprehensive urban plan for the following city:
+
+          City Name: {{ validate_input.city_name }}
+          Population: {{ validate_input.population }}
+          Area: {{ validate_input.area_sq_km }} sq km
+          Description: {{ validate_input.description }}
+
+          Provide detailed recommendations for:
+          1. Zoning and Land Use
+          2. Transportation and Mobility
+          3. Sustainability and Environmental Considerations
+          4. Public Spaces and Recreation
+          5. Infrastructure and Utilities
+          6. Economic Development
+          7. Housing and Community Development
+          8. Cultural and Historical Preservation
+
+          For each aspect, give specific, actionable advice and explain the reasoning behind your recommendations.
+
+  format_plan:
+    action: format_urban_plan
+    plan:
+      link: generate_urban_plan
